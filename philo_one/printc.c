@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
+/*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:14:36 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/04 18:46:46 by hellnhell        ###   ########.fr       */
+/*   Updated: 2021/04/05 11:29:09 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void    ft_putnbr(int nb)
 
 int print_ms(t_philos *philos, char *str, int n)
 {
-    u_int16_t   time;
+    u_int64_t   time;
     
     pthread_mutex_lock(&philos->global->mutex_print);
     time = gettime();

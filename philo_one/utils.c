@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
+/*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:03:38 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/04 18:48:06 by hellnhell        ###   ########.fr       */
+/*   Updated: 2021/04/05 11:44:05 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-u_int64_t    gettime(void)
+uint64_t    gettime(void)
 {
     static struct timeval tv;
 
     gettimeofday(&tv, NULL);
-    return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
+    return ((tv.tv_sec * (uint64_t)1000) + (tv.tv_usec / 1000));
 }
 
 int         ft_strlen(char *str)
@@ -77,7 +77,6 @@ int     free_global(t_global *global)
         {
             pthread_mutex_destroy(&global->philos[i].mutex);
             pthread_mutex_destroy(&global->philos[i].mutex_eat);
-            free(global->philos[i].name);
             i++;
         }
         free(global->philos);
