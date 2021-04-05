@@ -6,7 +6,7 @@
 /*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 18:53:05 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 19:30:55 by hellnhell        ###   ########.fr       */
+/*   Updated: 2021/04/05 20:52:54 by hellnhell        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <sys/time.h>
 # include <stdio.h>
 # include <string.h>
+# include <semaphore.h>
+# include <fcntl.h>
 
 typedef struct s_philos
 {
@@ -29,8 +31,8 @@ typedef struct s_philos
     u_int64_t       limit;
     u_int64_t       last_eat;
     struct s_global *global;
-    pthread_mutex_t mutex;
-    pthread_mutex_t mutex_eat;    
+    sem_t           *mutex;
+    sem_t           *mutex_eat;    
 }             t_philos;
 
 typedef struct s_global
@@ -43,9 +45,12 @@ typedef struct s_global
     u_int64_t       t_die;
     u_int64_t       start;
     t_philos        *philos;
-    pthread_mutex_t *mutex_forks; 
-    pthread_mutex_t mutex_print;
-    pthread_mutex_t mutex_dead;
+    char            *sem_print;
+    char            *sem_dead;
+    char            *sem_fork;
+    sem_t           *mutex_forks; 
+    sem_t           *mutex_print;
+    sem_t           *mutex_dead;
 }              t_global;
 
 
@@ -54,9 +59,10 @@ void	    ft_putnbr(int nb);
 int         ft_atoi(const char *s);
 int         main(int argc, char **argv);
 int         init_philos(t_global *global);
+char       *name(char *s1, char *dst, int num_philos);
 int         start_threads(t_global *global);
 void        *routine(void *philo_void);
-void        *dead(void *philo_void);
+void        dead(void *philo_void);
 void        life(t_philos *philos);
 void        count(void *global_v);
 u_int64_t   gettime(void);

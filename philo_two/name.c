@@ -1,46 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   name.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/01 19:03:38 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 20:47:42 by hellnhell        ###   ########.fr       */
+/*   Created: 2021/04/05 19:51:17 by hellnhell         #+#    #+#             */
+/*   Updated: 2021/04/05 19:51:32 by hellnhell        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-u_int64_t    gettime(void)
-{
-    static struct timeval tv;
-
-    gettimeofday(&tv, NULL);
-    return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
-}
-
-int         ft_strlen(char *str)
+char       *name(char *s1, char *dst, int num_philos)
 {
     int i;
+    int j;
+    char s3[250];
 
-    i = 0;
-    while (str[i] != '\0')
-        i++;
-    return (i);
-}
-
-int         ft_atoi(const char *s)
-{
-    int i;
-    int nb;
-
-    i = 0;
-    nb = 0;
-    while (s[i] >= '0' && s[i] <= '9')
+    j = 0;
+    while (s1[j] != '\0')
     {
-        nb = (nb * 10) + (s[i] - '0');
-        i++;
+        dst[j] = s1[j];
+        j++;
     }
-    return (nb);
+    i = 0;
+    while (num_philos > 0)
+    {
+        s3[i++] = (num_philos % 10) + '0';
+        num_philos = num_philos / 10;
+    }
+    while (i > 0)
+    {
+        dst[j] = s3[--i];
+        j++;
+    }
+    dst[j] = '\0';
+    return (dst);
 }

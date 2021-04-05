@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/01 19:02:43 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 18:28:34 by hellnhell        ###   ########.fr       */
+/*   Created: 2021/04/05 19:08:03 by hellnhell         #+#    #+#             */
+/*   Updated: 2021/04/05 20:47:57 by hellnhell        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "philosophers.h"
 
@@ -36,11 +37,7 @@ int     main(int argc, char **argv)
     global.philos = (t_philos *)malloc(sizeof(*(global.philos)) * global.n_philos);
     if (!global.philos)
        return (printf("Error: Global malloc\n"));
-    pthread_mutex_init(&global.mutex_print, NULL);
-    pthread_mutex_init(&global.mutex_dead, NULL);
     init_philos(&global);
     start_threads(&global);
-    pthread_mutex_lock(&global.mutex_dead);
-    free_global(&global);
-    return (0);
+    sem_wait(global.mutex_dead);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:32:52 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 12:43:27 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/05 18:18:37 by hellnhell        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@ int     init_philos(t_global *global)
     int i;
 
     i = 0;
-    //puede q asegure los mutex
-    pthread_mutex_init(&global->mutex_print, NULL);
-    pthread_mutex_init(&global->mutex_dead, NULL);
     pthread_mutex_lock(&global->mutex_dead);
     global->mutex_forks = (pthread_mutex_t *)malloc(sizeof(*(global->mutex_forks)) * global->n_philos);
     if(!global->mutex_forks)
@@ -38,5 +35,6 @@ int     init_philos(t_global *global)
         pthread_mutex_init(&global->mutex_forks[i], NULL);
         i++;
     }
+   
     return (0);   
 }
