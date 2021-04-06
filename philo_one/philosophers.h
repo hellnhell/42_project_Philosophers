@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
+/*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 18:53:05 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 19:30:55 by hellnhell        ###   ########.fr       */
+/*   Updated: 2021/04/06 13:22:30 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <string.h>
 
-typedef struct s_philos
+typedef struct s_philo
 {
     int             position;
     int             eating;
@@ -31,18 +31,18 @@ typedef struct s_philos
     struct s_global *global;
     pthread_mutex_t mutex;
     pthread_mutex_t mutex_eat;    
-}             t_philos;
+}             t_philo;
 
 typedef struct s_global
 {
-    int             n_philos;
+    int             n_philo;
     int             n_eats;
     int             eat_count;
     u_int64_t       t_eat;
     u_int64_t       t_sleep;
     u_int64_t       t_die;
     u_int64_t       start;
-    t_philos        *philos;
+    t_philo        *philo;
     pthread_mutex_t *mutex_forks; 
     pthread_mutex_t mutex_print;
     pthread_mutex_t mutex_dead;
@@ -57,10 +57,10 @@ int         init_philos(t_global *global);
 int         start_threads(t_global *global);
 void        *routine(void *philo_void);
 void        *dead(void *philo_void);
-void        life(t_philos *philos);
+void        life(t_philo *philo);
 void        count(void *global_v);
 u_int64_t   gettime(void);
-int         print_ms(t_philos *philos, char *str, int n);
+int         print_ms(t_philo *philo, char *str, int n);
 int         free_global(t_global *global);
 
 #endif

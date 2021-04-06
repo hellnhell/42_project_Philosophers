@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
+/*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:03:38 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 20:47:42 by hellnhell        ###   ########.fr       */
+/*   Updated: 2021/04/06 13:25:26 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,3 +44,30 @@ int         ft_atoi(const char *s)
     }
     return (nb);
 }
+
+int     free_global(t_global *global)
+{
+    int i;
+
+    i = 0;
+    if (global->mutex_forks)
+    {
+        while (i < global->n_philo)
+            pthread_mutex_destroy(&global->mutex_forks[i++]);
+        free(global->mutex_forks);
+    }
+    i = 0;
+    if (global->philo)
+    {
+        while (i < global->n_philo)
+        {
+            pthread_mutex_destroy(&global->philo[i].mutex);
+            pthread_mutex_destroy(&global->philo[i].mutex_eat);
+            i++;
+        }
+        free(global->philo);
+    }
+    pthread_mutex_destroy(&global->mutex_print);
+    pthread_mutex_destroy(&global->mutex_dead);
+    return (1);
+} 

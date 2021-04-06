@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threads.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hellnhell <hellnhell@student.42.fr>        +#+  +:+       +#+        */
+/*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 20:06:33 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/05 18:50:41 by hellnhell        ###   ########.fr       */
+/*   Updated: 2021/04/06 13:35:13 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ void    count(void *global_v)
 
     i = 0;
     global = (t_global *)global_v;
-    while (i < global->eat_count)
+    while (global->philo->eat_count_philo < global->eat_count)
     {
         j = 0;
-        while (j < global->n_philos)
-            pthread_mutex_lock(&global->philos[j++].mutex_eat);
+        while (j < global->n_philo)
+            pthread_mutex_lock(&global->philo[j++].mutex_eat);
         i++;
     }
     pthread_mutex_lock(&global->mutex_print);
@@ -34,60 +34,62 @@ void    count(void *global_v)
 
 void    *dead(void *philo_void)
 {
-    t_philos    *philos;
+    t_philo     *philo;
      u_int64_t   time;
     
-    philos = (t_philos *)philo_void;
+    philo = (t_philo *)philo_void;
     while (1)
     {
-        pthread_mutex_lock(&philos->mutex);
+        pthread_mutex_lock(&philo->mutex);
         time = gettime();
-        if (philos->eating == 0 && time > philos->limit)
+        // printf("time : %llu", time);
+        // printf("lim it : %llu", philos->limit);
+        if (philo->eating == 0 && time > philo->limit)
         {
-            print_ms(philos, "has died 💀\n", 1);
-            pthread_mutex_unlock(&philos->mutex);
-            pthread_mutex_unlock(&philos->global->mutex_dead);
+            print_ms(philo, "has died 💀\n", 1);
+            pthread_mutex_unlock(&philo->mutex);
+            pthread_mutex_unlock(&philo->global->mutex_dead);
         }
-        pthread_mutex_unlock(&philos->mutex);
+        pthread_mutex_unlock(&philo->mutex);
         usleep(1000); //suspende la ejecucuión cada x ms
     }
 }
 
-void    life(t_philos *philos)
+void    life(t_philo *philo)
 {
-    pthread_mutex_lock(&philos->global->mutex_forks[philos->fork_l]);
-    print_ms(philos, "has taken one fork 🍴 \n", 0);
-    pthread_mutex_lock(&philos->global->mutex_forks[philos->fork_r]);
-    print_ms(philos, "has taken another fork 🍴 \n", 0);
-    pthread_mutex_lock(&philos->mutex);
-    philos->eating = 1;
-    philos->last_eat = gettime();
-    philos->limit = philos->last_eat + philos->global->t_die;
-    print_ms(philos, "is eating 🍝\n", 0);
-    usleep(philos->global->t_eat * 1000);
-    philos->eat_count_philo++;
-    philos->eating = 0;
-    pthread_mutex_unlock(&philos->mutex);
-    pthread_mutex_unlock(&philos->mutex_eat);
-    print_ms(philos, "is sleeping 😴\n", 0);
-    pthread_mutex_unlock(&philos->global->mutex_forks[philos->fork_l]);
-    pthread_mutex_unlock(&philos->global->mutex_forks[philos->fork_r]);
-    usleep(philos->global->t_sleep * 1000);
-    print_ms(philos, "is thinking 🤔 \n", 0);   
+    pthread_mutex_lock(&philo->global->mutex_forks[philo->fork_l]);
+    print_ms(philo, "has taken one fork 🍴 \n", 0);
+    pthread_mutex_lock(&philo->global->mutex_forks[philo->fork_r]);
+    print_ms(philo, "has taken another fork 🍴 \n", 0);
+    pthread_mutex_lock(&philo->mutex);
+    philo->eating = 1;
+    philo->last_eat = gettime();
+    philo->limit = philo->last_eat + philo->global->t_die;
+    print_ms(philo, "is eating 🍝\n", 0);
+    usleep(philo->global->t_eat * 1000);
+    philo->eat_count_philo++;
+    philo->eating = 0;
+    pthread_mutex_unlock(&philo->mutex);
+    pthread_mutex_unlock(&philo->mutex_eat);
+    print_ms(philo, "is sleeping 😴\n", 0);
+    pthread_mutex_unlock(&philo->global->mutex_forks[philo->fork_l]);
+    pthread_mutex_unlock(&philo->global->mutex_forks[philo->fork_r]);
+    usleep(philo->global->t_sleep * 1000);
+    print_ms(philo, "is thinking 🤔 \n", 0);   
 }
 
 void    *routin(void *philo_void)
 {
-    t_philos    *philos;
+    t_philo     *philo;
     pthread_t   thread;
     
-    philos = (t_philos*)philo_void;
-    philos->last_eat = gettime();
-    philos->limit = philos->last_eat + philos->global->t_die;
+    philo = (t_philo *)philo_void;
+    philo->last_eat = gettime();
+    philo->limit = philo->last_eat + philo->global->t_die;
     pthread_create(&thread, NULL, &dead, philo_void);
     pthread_detach(thread); //reclaimed variables when thrad is finished
     while (1)
-        life(philos);
+        life(philo);
 }
 
 
@@ -104,9 +106,9 @@ int start_threads(t_global *global)
 		pthread_create(&thread, NULL, (void *)&count, (void*)global);
 		pthread_detach(thread);
 	}
-    while (i < global->n_philos)
+    while (i < global->n_philo)
     {
-        philo_void = (void *)(&global->philos[i]);
+        philo_void = (void *)(&global->philo[i]);
         pthread_create(&thread, NULL, &routin, philo_void);
         pthread_detach(thread);
         usleep(100);
