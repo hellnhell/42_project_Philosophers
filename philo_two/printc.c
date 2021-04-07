@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:14:36 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/06 13:28:01 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/07 13:32:45 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,16 @@ void    ft_putnbr(int nb)
 int print_ms(t_philo *philo, char *str, int n)
 {
     u_int64_t   time;
-    
-    sem_wait(philo->global->mutex_print);
-    time = gettime();
-    ft_putnbr(time - philo->global->start);
-    write(1, "\t", 1);
-    ft_putnbr(philo->position + 1);
-    write(1, "\t", 1);
-    write(1, str, ft_strlen(str));
-    if (n == 1)
-        return (0);    
-    sem_post(philo->global->mutex_print);
-    return (0);
+
+      sem_wait(philo->global->mutex_print);
+      time = gettime();
+      ft_putnbr(time - philo->global->start);
+      write(1, "\t", 1);
+        ft_putnbr(philo->position + 1);
+      write(1, "\t", 1);
+      write(1, str, ft_strlen(str));
+      if (n == 1)
+          return (0);    
+      sem_post(philo->global->mutex_print);
+      return (0);
 }

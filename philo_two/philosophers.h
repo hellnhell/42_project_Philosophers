@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 18:53:05 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/06 13:26:06 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/07 14:27:22 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct s_philo
     int             eating;
     int             fork_l;
     int             fork_r;
-    int             eat_count_philo;
     u_int64_t       limit;
     u_int64_t       last_eat;
     struct s_global *global;
@@ -38,8 +37,8 @@ typedef struct s_philo
 typedef struct s_global
 {
     int             n_philo;
-    int             n_eats;
     int             eat_count;
+    int             eat_count_philo;
     u_int64_t       t_eat;
     u_int64_t       t_sleep;
     u_int64_t       t_die;
@@ -67,6 +66,5 @@ void        life(t_philo *philo);
 void        count(void *global_v);
 u_int64_t   gettime(void);
 int         print_ms(t_philo *philo, char *str, int n);
-int         free_global(t_global *global);
 
 #endif
