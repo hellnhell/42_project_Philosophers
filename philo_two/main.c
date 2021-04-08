@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 19:08:03 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/07 14:31:11 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/08 13:26:41 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void    get_args(t_global *global, char **argv)
 int     main(int argc, char **argv)
 {
     t_global    global;
-    
 
     if (argc < 5 || argc > 6 )
        return (printf("Error: Bad number of arguments\n"));

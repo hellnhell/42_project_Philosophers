@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 20:06:33 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/06 13:35:13 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/08 14:14:07 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,16 @@
 void    count(void *global_v)
 {
     t_global    *global;
-    int         i;
-    int         j;
 
-    i = 0;
     global = (t_global *)global_v;
-    while (global->philo->eat_count_philo < global->eat_count)
+    while (1)
     {
-        j = 0;
-        while (j < global->n_philo)
-            pthread_mutex_lock(&global->philo[j++].mutex_eat);
-        i++;
+        if (global->eat_count_philo > global->eat_count * global->n_philo)
+        {
+            print_ms(global->philo, "PHILOSOPHERS HAVE SURVIVED 💅 💅 💅 !!!\n", 1);
+            pthread_mutex_unlock(&global->mutex_dead);
+        } 
     }
-    pthread_mutex_lock(&global->mutex_print);
-    printf("PHILOSOPHERS HAVE SURVIVED 💅 💅 💅 !!!\n");
-    pthread_mutex_unlock(&global->mutex_dead);
 }
 
 void    *dead(void *philo_void)
@@ -52,6 +47,7 @@ void    *dead(void *philo_void)
         }
         pthread_mutex_unlock(&philo->mutex);
         usleep(1000); //suspende la ejecucuión cada x ms
+        
     }
 }
 
@@ -66,16 +62,15 @@ void    life(t_philo *philo)
     philo->last_eat = gettime();
     philo->limit = philo->last_eat + philo->global->t_die;
     print_ms(philo, "is eating 🍝\n", 0);
+    philo->global->eat_count_philo++;
     usleep(philo->global->t_eat * 1000);
-    philo->eat_count_philo++;
-    philo->eating = 0;
     pthread_mutex_unlock(&philo->mutex);
     pthread_mutex_unlock(&philo->mutex_eat);
-    print_ms(philo, "is sleeping 😴\n", 0);
     pthread_mutex_unlock(&philo->global->mutex_forks[philo->fork_l]);
     pthread_mutex_unlock(&philo->global->mutex_forks[philo->fork_r]);
+    print_ms(philo, "is sleeping 😴\n", 0);
     usleep(philo->global->t_sleep * 1000);
-    print_ms(philo, "is thinking 🤔 \n", 0);   
+    print_ms(philo, "is thinking 🤔 \n", 0);
 }
 
 void    *routin(void *philo_void)

@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:02:43 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/06 13:22:53 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/08 14:14:37 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int     main(int argc, char **argv)
         return (printf("Error: Global malloc\n"));
     pthread_mutex_init(&global.mutex_print, NULL);
     pthread_mutex_init(&global.mutex_dead, NULL);
+    global.eat_count_philo = 1;
     init_philos(&global);
     start_threads(&global);
     pthread_mutex_lock(&global.mutex_dead);

@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 18:53:05 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/06 13:22:30 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/08 12:43:21 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ typedef struct s_philo
     int             eating;
     int             fork_l;
     int             fork_r;
-    int             eat_count_philo;
     u_int64_t       limit;
     u_int64_t       last_eat;
     struct s_global *global;
@@ -37,6 +36,7 @@ typedef struct s_global
 {
     int             n_philo;
     int             n_eats;
+    int             eat_count_philo;
     int             eat_count;
     u_int64_t       t_eat;
     u_int64_t       t_sleep;

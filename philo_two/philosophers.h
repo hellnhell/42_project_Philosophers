@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 18:53:05 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/07 14:27:22 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/08 13:40:40 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,11 @@ int         init_philos(t_global *global);
 char       *name(char *s1, char *dst, int num_philos);
 int         start_threads(t_global *global);
 void        *routine(void *philo_void);
-void        dead(void *philo_void);
+void        *dead(void *philo_void);
 void        life(t_philo *philo);
 void        count(void *global_v);
 u_int64_t   gettime(void);
 int         print_ms(t_philo *philo, char *str, int n);
+
 
 #endif

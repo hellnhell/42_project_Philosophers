@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:32:52 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/06 13:33:51 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/08 12:43:28 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int     init_philos(t_global *global)
         global->philo[i].fork_r = (i + 1) % global->n_philo; 
         global->philo[i].global = global;
         global->philo[i].eating = 0;
-        global->philo[i].eat_count_philo = 0;
+
         pthread_mutex_init(&global->philo[i].mutex, NULL);
         pthread_mutex_init(&global->philo[i].mutex_eat, NULL);
         pthread_mutex_lock(&global->philo[i].mutex_eat);
