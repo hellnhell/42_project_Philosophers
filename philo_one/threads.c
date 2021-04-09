@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 20:06:33 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/08 14:14:07 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/09 11:53:21 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,18 @@ void    count(void *global_v)
 void    *dead(void *philo_void)
 {
     t_philo     *philo;
-     u_int64_t   time;
+     uint64_t   time;
     
     philo = (t_philo *)philo_void;
     while (1)
     {
-        pthread_mutex_lock(&philo->mutex);
         time = gettime();
-        // printf("time : %llu", time);
-        // printf("lim it : %llu", philos->limit);
         if (philo->eating == 0 && time > philo->limit)
         {
             print_ms(philo, "has died 💀\n", 1);
-            pthread_mutex_unlock(&philo->mutex);
             pthread_mutex_unlock(&philo->global->mutex_dead);
         }
-        pthread_mutex_unlock(&philo->mutex);
-        usleep(1000); //suspende la ejecucuión cada x ms
-        
+        usleep(1000);
     }
 }
 
@@ -57,15 +51,12 @@ void    life(t_philo *philo)
     print_ms(philo, "has taken one fork 🍴 \n", 0);
     pthread_mutex_lock(&philo->global->mutex_forks[philo->fork_r]);
     print_ms(philo, "has taken another fork 🍴 \n", 0);
-    pthread_mutex_lock(&philo->mutex);
     philo->eating = 1;
     philo->last_eat = gettime();
     philo->limit = philo->last_eat + philo->global->t_die;
     print_ms(philo, "is eating 🍝\n", 0);
     philo->global->eat_count_philo++;
     usleep(philo->global->t_eat * 1000);
-    pthread_mutex_unlock(&philo->mutex);
-    pthread_mutex_unlock(&philo->mutex_eat);
     pthread_mutex_unlock(&philo->global->mutex_forks[philo->fork_l]);
     pthread_mutex_unlock(&philo->global->mutex_forks[philo->fork_r]);
     print_ms(philo, "is sleeping 😴\n", 0);
