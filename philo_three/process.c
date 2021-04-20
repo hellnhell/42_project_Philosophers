@@ -1,34 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   threads.c                                          :+:      :+:    :+:   */
+/*   process.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/05 20:08:48 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/20 14:11:12 by emartin-         ###   ########.fr       */
+/*   Created: 2021/04/12 10:36:24 by emartin-          #+#    #+#             */
+/*   Updated: 2021/04/20 14:26:35 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	count(void *global_v)
+void	*count(void *philo_void)
 {
 	t_glob	*glob;
+	int		i;
 
-	glob = (t_glob *)global_v;
-	while (1)
-	{
-		sem_wait(glob->philo->mtx);
-		if (glob->eat_count_philo > glob->eat_count * glob->n_philo)
-		{
-			print_ms(glob->philo, "PHILOSOPHERS HAVE SURVIVED 💅 💅 💅 !!!\n", 1);
-			sem_post(glob->philo->mtx);
-			sem_post(glob->mtx_dead);
-			printf("eat count = %d\n", glob->eat_count_philo - 1);
-		}
-		sem_post(glob->philo->mtx);
-	}
+	glob = (t_glob *)philo_void;
+	i = -1;
+	while (++i < glob->n_philo)
+		sem_wait(glob->mutex_count);
+	print_ms(glob->philo, "PHILOSOPHERS HAVE SURVIVED 💅 💅 💅 !!!\n", 1);
+	sem_post(glob->philo->mutex);
+	sem_post(glob->mutex_dead);
+	return (NULL);
 }
 
 void	*dead(void	*philo_void)
@@ -39,39 +35,41 @@ void	*dead(void	*philo_void)
 	philo = (t_philo *)philo_void;
 	while (1)
 	{
-		sem_wait(philo->mtx);
+		sem_wait(philo->mutex);
 		time = gettime();
 		if (!philo->eating && time > philo->limit)
 		{
 			print_ms(philo, "has died 💀\n", 1);
-			sem_post(philo->mtx);
-			sem_post(philo->glob->mtx_dead);
+			sem_post(philo->mutex);
+			sem_post(philo->glob->mutex_dead);
 		}
-		sem_post(philo->mtx);
+		sem_post(philo->mutex);
 		usleep(1000);
 	}
 }
 
 void	life(t_philo *philo)
 {
-	sem_wait(philo->glob->mtx_forks);
+	sem_wait(philo->glob->mutex_forks);
 	print_ms(philo, "has taken one fork 🍴 \n", 0);
-	sem_wait(philo->glob->mtx_forks);
+	sem_wait(philo->glob->mutex_forks);
 	print_ms(philo, "has taken another fork 🍴 \n", 0);
-	sem_wait(philo->mtx);
-	sem_wait(philo->mtx_eat);
+	sem_wait(philo->mutex);
+	sem_wait(philo->mutex_eat);
 	philo->eating = 1;
 	philo->last_eat = gettime();
 	philo->limit = philo->last_eat + philo->glob->t_die;
+	if (philo->eat_count_philo == philo->glob->eat_count)
+		sem_post(philo->glob->mutex_count);
 	print_ms(philo, "is eating 🍝\n", 0);
-	philo->glob->eat_count_philo++;
+	philo->eat_count_philo++;
 	usleep(philo->glob->t_eat * 850);
 	philo->eating = 0;
-	sem_post(philo->mtx_eat);
-	sem_post(philo->mtx);
+	sem_post(philo->mutex_eat);
+	sem_post(philo->mutex);
 	print_ms(philo, "is sleeping 😴\n", 0);
-	sem_post(philo->glob->mtx_forks);
-	sem_post(philo->glob->mtx_forks);
+	sem_post(philo->glob->mutex_forks);
+	sem_post(philo->glob->mutex_forks);
 	usleep(philo->glob->t_sleep * 850);
 	print_ms(philo, "is thinking 🤔 \n", 0);
 }
@@ -84,30 +82,36 @@ void	*routine(void *philo_void)
 	philo = (t_philo *)philo_void;
 	philo->last_eat = gettime();
 	philo->limit = philo->last_eat + philo->glob->t_die;
-	pthread_create(&thread, NULL, &dead, philo_void);
+	if (pthread_create(&thread, NULL, dead, philo_void) != 0)
+		return ((void *)1);
 	pthread_detach(thread);
 	while (1)
 		life(philo);
+	return ((void *)0);
 }
 
 int	start_threads(t_glob *glob)
 {
 	int			i;
 	pthread_t	thread;
-	void		*philo_void;
 
 	i = 0;
 	if (glob->eat_count > 0)
 	{
-		pthread_create(&thread, NULL, (void *)&count, (void *)glob);
+		pthread_create(&thread, NULL, count, (void *)glob);
 		pthread_detach(thread);
 	}
 	glob->start = gettime();
 	while (i < glob->n_philo)
 	{
-		philo_void = (void *)(&glob->philo[i]);
-		pthread_create(&thread, NULL, &routine, philo_void);
-		pthread_detach(thread);
+		glob->philo[i].pid = fork();
+		if (glob->philo[i].pid < 0)
+			return (0);
+		if (glob->philo[i].pid == 0)
+		{
+			routine(&glob->philo[i]);
+			exit (0);
+		}
 		usleep(100);
 		i++;
 	}

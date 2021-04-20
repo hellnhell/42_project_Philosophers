@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/05 19:08:03 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/20 13:44:34 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/20 14:12:24 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,11 @@ static void	get_args(t_glob *glob, char **argv, int argc)
 		glob->eat_count = ft_atoi(argv[5]);
 	else
 		glob->eat_count = 0;
+	glob->ea = 0;
 	glob->sem_fork = "sem_fork";
 	glob->sem_dead = "sem_dead";
 	glob->sem_print = "sem_print";
+	glob->sem_count = "sem_count";
 }
 
 int	main(int argc, char **argv)
@@ -63,6 +65,6 @@ int	main(int argc, char **argv)
 		return (printf("Error: Bad arguments\n"));
 	init_philos(glob);
 	start_threads(glob);
-	sem_wait(glob->mtx_dead);
+	sem_wait(glob->mutex_dead);
 	return (0);
 }

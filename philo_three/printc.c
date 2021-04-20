@@ -6,7 +6,7 @@
 /*   By: emartin- <emartin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/01 19:14:36 by hellnhell         #+#    #+#             */
-/*   Updated: 2021/04/20 12:46:10 by emartin-         ###   ########.fr       */
+/*   Updated: 2021/04/20 14:16:16 by emartin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,15 @@ int	print_ms(t_philo *philo, char *str, int n)
 {
 	u_int64_t	time;
 
-	pthread_mutex_lock(&philo->global->mutex_print);
+	sem_wait(philo->glob->mutex_print);
 	time = gettime();
-	ft_putnbr(time - philo->global->start);
+	ft_putnbr(time - philo->glob->start);
 	write(1, "\t", 1);
 	ft_putnbr(philo->position + 1);
 	write(1, "\t", 1);
 	write(1, str, ft_strlen(str));
 	if (n == 1)
 		return (0);
-	pthread_mutex_unlock(&philo->global->mutex_print);
+	sem_post(philo->glob->mutex_print);
 	return (0);
 }
